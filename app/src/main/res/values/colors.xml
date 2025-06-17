@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4CAF50</color>
-    <color name="colorSecondary">#FF9800</color>
+    <color name="background">#2A1471</color>
 
-    <color name="backgroundColor">#2A1471</color>
-    <color name="textColor">#FFFFFF</color>
+    <color name="text_color">#FFFFFF</color>
+    <color name="text_placeholder_username">#47525E</color>
+    <color name="text_black">#000000</color>
+
+    <color name="button_background_homepage">#D29B00</color>
+    <color name="button_mode_classic">#367F19</color>
+    <color name="button_mode_studdendeath">#B03436</color>
+    <color name="button_ranking">#B26F00</color>
+
+    <color name="green_bar_empty">#A685FF</color>
+    <color name="quizz_green">#00893C</color>
+    <color name="quizz_response_wrong">#FF0005</color>
+    <color name="quizz_response_propositions">#B8DAFF</color>
+
+    <color name="score_great">#00BA1F</color>
+    <color name="score_good">#B3BA00</color>
+    <color name="score_bad">#BA5B00</color>
+    <color name="score_noob">#BA0000</color>
+
+    <color name="ranking_case">#2C002A</color>
 </resources>
