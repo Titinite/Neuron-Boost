@@ -1,9 +1,7 @@
 package com.supdevinci.neuronboost.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.supdevinci.neuronboost.model.RankingEntity
-import com.supdevinci.tasksapp.model.TaskEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
 
@@ -16,12 +14,12 @@ interface RankingDao {
     @Update
     fun update(rank: RankingEntity): Int
 
-    @Query("UPDATE tasks SET deletedAt = :deletedAt WHERE id = :taskId")
-    fun softDelete(taskId: Int, deletedAt: Date): Int
+    @Query("UPDATE ranking SET deletedAt = :deletedAt WHERE id = :rankId")
+    fun softDelete(rankId: Int, deletedAt: Date): Int
 
-    @Query("SELECT * FROM tasks WHERE deletedAt IS NULL")
-    fun getAllActiveTasks(): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM ranking WHERE deletedAt IS NULL")
+    fun getAllActiveTasks(): Flow<List<RankingEntity>>
 
-    @Query("SELECT * FROM tasks WHERE id = :taskId")
-    fun getById(taskId: Int): Flow<TaskEntity>
+    @Query("SELECT * FROM ranking WHERE id = :rankId")
+    fun getById(rankId: Int): Flow<RankingEntity>
 }

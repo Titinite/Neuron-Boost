@@ -9,5 +9,7 @@ data class RankingEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     var username: String,
     var score: Int,
-    var date: Date,
+    var createdAt: Date,
+    var updatedAt: Date,
+    var deletedAt: Date,
 )
