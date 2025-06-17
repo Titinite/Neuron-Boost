@@ -50,7 +50,7 @@ val labelQuestionNumber = TextStyle(
 
 val labelCategory = TextStyle(
     fontFamily = Norwester,
-    fontSize = 18.sp,
+    fontSize = 24.sp,
 )
 
 val titleScore = TextStyle(
