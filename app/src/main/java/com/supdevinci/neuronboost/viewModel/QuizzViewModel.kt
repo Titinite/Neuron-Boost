@@ -49,6 +49,8 @@ class QuizzViewModel : ViewModel() {
     private val _isQuizFinished = MutableStateFlow(false)
     val isQuizFinished = _isQuizFinished.asStateFlow()
 
+    val totalQuestions = 20
+
     init {
         fetchQuestions()
     }
@@ -105,9 +107,5 @@ class QuizzViewModel : ViewModel() {
         } else {
             _isQuizFinished.value = true
         }
-    }
-
-    fun decodeHtml(text: String): String {
-        return HtmlCompat.fromHtml(text,HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
     }
 }

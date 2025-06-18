@@ -45,7 +45,7 @@ val mainFont = TextStyle(
 
 val labelQuestionNumber = TextStyle(
     fontFamily = FiraSansLight,
-    fontSize = 12.sp,
+    fontSize = 16.sp,
 )
 
 val labelCategory = TextStyle(

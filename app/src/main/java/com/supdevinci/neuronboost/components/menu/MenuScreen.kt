@@ -97,7 +97,7 @@ fun MenuScreen() {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                placeholder = { Text("Titinite", style = mainFont) },
+                placeholder = { Text("Titinite", style = mainFont, color = AppColors.TextPlaceholderUsername) },
             )
 
             Spacer(modifier = Modifier.weight(1f))

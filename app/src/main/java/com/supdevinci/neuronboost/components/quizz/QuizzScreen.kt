@@ -26,112 +26,147 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.supdevinci.neuronboost.ui.theme.AppColors
 import com.supdevinci.neuronboost.ui.theme.labelCategory
+import com.supdevinci.neuronboost.ui.theme.labelQuestionNumber
 import com.supdevinci.neuronboost.ui.theme.mainFont
 import com.supdevinci.neuronboost.utils.decodeHtml
 import com.supdevinci.neuronboost.viewModel.QuizzViewModel
+import com.supdevinci.neuronboost.viewModel.ScoreViewModel
 
 @Composable
-fun QuizzScreen(viewModel: QuizzViewModel) {
-    val question by viewModel.currentQuestion.collectAsState()
-    val answers by viewModel.shuffledAnswers.collectAsState()
-    val selectedAnswer by viewModel.selectedAnswer.collectAsState()
-    val error by viewModel.errorMessage.collectAsState()
-    val score by viewModel.score.collectAsState()
-    val isFinished by viewModel.isQuizFinished.collectAsState()
+fun QuizzScreen(quizzViewModel: QuizzViewModel, scoreViewModel: ScoreViewModel) {
+    val question by quizzViewModel.currentQuestion.collectAsState()
+    val answers by quizzViewModel.shuffledAnswers.collectAsState()
+    val selectedAnswer by quizzViewModel.selectedAnswer.collectAsState()
+    val error by quizzViewModel.errorMessage.collectAsState()
+
+    val currentIndex by quizzViewModel.currentQuestionIndex.collectAsState()
+    val progress = (currentIndex).toFloat() / quizzViewModel.totalQuestions
+    val isFinished by quizzViewModel.isQuizFinished.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchQuestions()
+        quizzViewModel.fetchQuestions()
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppColors.Background),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+    if (isFinished) {
+        ScoreScreen(quizzViewModel, scoreViewModel)
+    } else {
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 40.dp, bottom = 32.dp)
+                .background(AppColors.Background),
+            contentAlignment = Alignment.TopCenter
         ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 40.dp, bottom = 32.dp)
+            ) {
+                if (question != null) {
 
-            if (isFinished) {
-                Text("Quiz terminé !", style = mainFont, color = AppColors.TextBlack)
-                Text("Score : $score / 20", style = mainFont, color = AppColors.TextBlack)
-                return@Column
-            }
+                    Spacer(modifier = Modifier.weight(1f))
 
-            if (question != null) {
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Column(
-                    modifier = Modifier.width(400.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .height(275.dp)
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(AppColors.TextColor)
-                            .padding(16.dp),
-                        contentAlignment = Alignment.Center,
+                    Column(
+                        modifier = Modifier.width(400.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(24.dp),
+                        androidx.compose.material3.LinearProgressIndicator(
+                            progress = progress,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp),
+                            color = AppColors.QuizzGreen,
+                            trackColor = AppColors.GreenBarEmpty
+                        )
+
+                        Text(
+                            text = "Question ${currentIndex + 1} sur ${quizzViewModel.totalQuestions}",
+                            style = labelQuestionNumber,
+                            color = AppColors.TextColor,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .height(275.dp)
+                                .clip(RoundedCornerShape(24.dp))
+                                .background(AppColors.TextColor)
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center,
                         ) {
-                            Text(
-                                decodeHtml(question!!.category),
-                                style = labelCategory,
-                                color = AppColors.TextBlack
-                            )
-                            Spacer(modifier = Modifier.height(6.dp))
-                            Text(
-                                decodeHtml(question!!.question),
-                                style = mainFont,
-                                color = AppColors.TextBlack,
-                                textAlign = TextAlign.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(24.dp),
+                            ) {
+                                Text(
+                                    question!!.category.decodeHtml(),
+                                    style = labelCategory,
+                                    color = AppColors.TextBlack,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    question!!.question.decodeHtml(),
+                                    style = mainFont,
+                                    color = AppColors.TextBlack,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        answers.forEach { answer ->
+                            Button(
+                                onClick = {
+                                    if (selectedAnswer == null) quizzViewModel.selectAnswer(answer)
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AppColors.QuizzResponsePropositions,
+                                    contentColor = AppColors.TextBlack,
+                                    disabledContainerColor = AppColors.QuizzResponsePropositions,
+                                    disabledContentColor = AppColors.TextBlack
+                                ),
+                                shape = RoundedCornerShape(16.dp),
+                                contentPadding = PaddingValues(vertical = 20.dp),
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = selectedAnswer == null
+                            ) {
+                                Text(
+                                    answer.text.decodeHtml(),
+                                    style = mainFont,
+                                    color = AppColors.TextBlack,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.weight(1f))
 
-                    answers.forEach { answer ->
-                        Button(
-                            onClick = {
-                                if (selectedAnswer == null) viewModel.selectAnswer(answer)
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = AppColors.QuizzResponsePropositions,
-                                contentColor = AppColors.TextBlack,
-                                disabledContainerColor = AppColors.QuizzResponsePropositions,
-                                disabledContentColor = AppColors.TextBlack
-                            ),
-                            shape = RoundedCornerShape(16.dp),
-                            contentPadding = PaddingValues(vertical = 20.dp),
-                            modifier = Modifier.fillMaxWidth(),
-                            enabled = selectedAnswer == null
-                        ) {
-                            Text(
-                                decodeHtml(answer.text),
-                                style = mainFont,
-                                color = AppColors.TextBlack
-                            )
-                        }
+                } else if (error != null) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("Erreur", style = mainFont, color = AppColors.TextColor)
+                    }
+                } else {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("Chargement en cours...", style = mainFont, color = AppColors.TextColor
+                        )
                     }
                 }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-            } else if (error != null) {
-                Text("Erreur")
-            } else {
-                Text("Chargement en cours...")
             }
         }
     }
