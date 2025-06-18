@@ -14,9 +14,6 @@ class QuizzActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        quizzViewModel.fetchQuestion()
-
         setContent {
             NeuronBoostTheme {
                 QuizzScreen(quizzViewModel)

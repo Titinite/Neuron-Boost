@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,15 +29,19 @@ import com.supdevinci.neuronboost.ui.theme.labelCategory
 import com.supdevinci.neuronboost.ui.theme.mainFont
 import com.supdevinci.neuronboost.utils.decodeHtml
 import com.supdevinci.neuronboost.viewModel.QuizzViewModel
-import androidx.compose.runtime.*
-import com.supdevinci.neuronboost.model.AnswerOptions
 
 @Composable
 fun QuizzScreen(viewModel: QuizzViewModel) {
-    val question by viewModel.responseData.collectAsState()
+    val question by viewModel.currentQuestion.collectAsState()
     val answers by viewModel.shuffledAnswers.collectAsState()
-    var selectedAnswer by remember { mutableStateOf<AnswerOptions?>(null) }
+    val selectedAnswer by viewModel.selectedAnswer.collectAsState()
     val error by viewModel.errorMessage.collectAsState()
+    val score by viewModel.score.collectAsState()
+    val isFinished by viewModel.isQuizFinished.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchQuestions()
+    }
 
     Box(
         modifier = Modifier
@@ -51,6 +56,12 @@ fun QuizzScreen(viewModel: QuizzViewModel) {
                 .fillMaxSize()
                 .padding(top = 40.dp, bottom = 32.dp)
         ) {
+
+            if (isFinished) {
+                Text("Quiz terminé !", style = mainFont, color = AppColors.TextBlack)
+                Text("Score : $score / 20", style = mainFont, color = AppColors.TextBlack)
+                return@Column
+            }
 
             if (question != null) {
 
@@ -91,21 +102,16 @@ fun QuizzScreen(viewModel: QuizzViewModel) {
                     Spacer(modifier = Modifier.height(12.dp))
 
                     answers.forEach { answer ->
-                        val isSelected = selectedAnswer != null
-                        val isCorrect = answer.isCorrect
-                        val backgroundColor = when {
-                            !isSelected -> AppColors.QuizzResponsePropositions
-                            answer == selectedAnswer && isCorrect -> AppColors.QuizzGreen
-                            answer == selectedAnswer && !isCorrect -> AppColors.QuizzResponseWrong
-                            else -> AppColors.QuizzResponsePropositions
-                        }
                         Button(
                             onClick = {
-                                if (selectedAnswer == null) {
-                                    selectedAnswer = answer
-                                }
+                                if (selectedAnswer == null) viewModel.selectAnswer(answer)
                             },
-                            colors = ButtonDefaults.buttonColors(backgroundColor),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppColors.QuizzResponsePropositions,
+                                contentColor = AppColors.TextBlack,
+                                disabledContainerColor = AppColors.QuizzResponsePropositions,
+                                disabledContentColor = AppColors.TextBlack
+                            ),
                             shape = RoundedCornerShape(16.dp),
                             contentPadding = PaddingValues(vertical = 20.dp),
                             modifier = Modifier.fillMaxWidth(),

@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface Quizz {
 
     @GET("api.php")
-    suspend fun getOneQuestion(
-        @Query("amount") amount: Int = 1
+    suspend fun getQuestions(
+        @Query("amount") amount: Int = 20
     ): Response<QuizzResponse>
 }
