@@ -12,9 +12,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.sp
 import com.supdevinci.neuronboost.ui.theme.AppColors
 import com.supdevinci.neuronboost.R
 import com.supdevinci.neuronboost.ui.theme.buttonMenu
@@ -58,6 +60,7 @@ fun MenuScreen(userViewModel: UserViewModel) {
             Button(
                 onClick = {
                     val intent = Intent(context, QuizzActivity::class.java)
+                    intent.putExtra("username", username)
                     context.startActivity(intent)
                 },
                 colors = ButtonDefaults.buttonColors(AppColors.ButtonModeClassic),
@@ -104,8 +107,11 @@ fun MenuScreen(userViewModel: UserViewModel) {
                     userViewModel.setUsername(it)
                 },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                textStyle = mainFont.copy(),
+                modifier = Modifier.fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(AppColors.TextColor)
+                    .padding(vertical = 10.dp, horizontal = 16.dp),
                 placeholder = { Text("Titinite", style = mainFont, color = AppColors.TextPlaceholderUsername) },
             )
 

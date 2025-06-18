@@ -55,7 +55,7 @@ fun QuizzScreen(
     }
 
     if (isFinished) {
-        ScoreScreen(quizzViewModel, scoreViewModel, userViewModel, rankingViewModel)
+        ScoreScreen(quizzViewModel, scoreViewModel, userViewModel = userViewModel, rankingViewModel)
     } else {
         Box(
             modifier = Modifier

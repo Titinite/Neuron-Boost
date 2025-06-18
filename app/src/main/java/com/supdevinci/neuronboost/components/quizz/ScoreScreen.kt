@@ -27,6 +27,7 @@ import com.supdevinci.neuronboost.viewModel.QuizzViewModel
 import com.supdevinci.neuronboost.viewModel.RankingViewModel
 import com.supdevinci.neuronboost.viewModel.ScoreViewModel
 import com.supdevinci.neuronboost.viewModel.UserViewModel
+import androidx.compose.runtime.getValue
 
 @Composable
 fun ScoreScreen(
@@ -37,7 +38,7 @@ fun ScoreScreen(
 ) {
 
     val score = quizzViewModel.score.collectAsState().value
-    val username = userViewModel.username.collectAsState().value
+    val username by userViewModel.username.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
