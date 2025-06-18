@@ -1,6 +1,5 @@
 package com.supdevinci.neuronboost.viewModel
 
-import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.supdevinci.neuronboost.data.RetrofitInstance

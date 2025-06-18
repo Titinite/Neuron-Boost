@@ -30,10 +30,17 @@ import com.supdevinci.neuronboost.ui.theme.labelQuestionNumber
 import com.supdevinci.neuronboost.ui.theme.mainFont
 import com.supdevinci.neuronboost.utils.decodeHtml
 import com.supdevinci.neuronboost.viewModel.QuizzViewModel
+import com.supdevinci.neuronboost.viewModel.RankingViewModel
+import com.supdevinci.neuronboost.viewModel.UserViewModel
 import com.supdevinci.neuronboost.viewModel.ScoreViewModel
 
 @Composable
-fun QuizzScreen(quizzViewModel: QuizzViewModel, scoreViewModel: ScoreViewModel) {
+fun QuizzScreen(
+    quizzViewModel: QuizzViewModel,
+    scoreViewModel: ScoreViewModel,
+    userViewModel: UserViewModel,
+    rankingViewModel: RankingViewModel
+) {
     val question by quizzViewModel.currentQuestion.collectAsState()
     val answers by quizzViewModel.shuffledAnswers.collectAsState()
     val selectedAnswer by quizzViewModel.selectedAnswer.collectAsState()
@@ -48,7 +55,7 @@ fun QuizzScreen(quizzViewModel: QuizzViewModel, scoreViewModel: ScoreViewModel) 
     }
 
     if (isFinished) {
-        ScoreScreen(quizzViewModel, scoreViewModel)
+        ScoreScreen(quizzViewModel, scoreViewModel, userViewModel, rankingViewModel)
     } else {
         Box(
             modifier = Modifier

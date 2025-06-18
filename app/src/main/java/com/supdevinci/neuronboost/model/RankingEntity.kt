@@ -10,6 +10,6 @@ data class RankingEntity(
     var username: String,
     var score: Int,
     var createdAt: Date,
-    var updatedAt: Date,
-    var deletedAt: Date,
+    var updatedAt: Date? = null,
+    var deletedAt: Date? = null,
 )

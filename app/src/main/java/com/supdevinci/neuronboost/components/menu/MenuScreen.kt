@@ -19,10 +19,13 @@ import com.supdevinci.neuronboost.ui.theme.AppColors
 import com.supdevinci.neuronboost.R
 import com.supdevinci.neuronboost.ui.theme.buttonMenu
 import com.supdevinci.neuronboost.ui.theme.mainFont
+import com.supdevinci.neuronboost.view.MenuActivity
 import com.supdevinci.neuronboost.view.QuizzActivity
+import com.supdevinci.neuronboost.view.RankingActivity
+import com.supdevinci.neuronboost.viewModel.UserViewModel
 
 @Composable
-fun MenuScreen() {
+fun MenuScreen(userViewModel: UserViewModel) {
     val context = LocalContext.current
     var username by remember { mutableStateOf("") }
 
@@ -78,7 +81,10 @@ fun MenuScreen() {
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
-                onClick = {  },
+                onClick = {
+                    val intent = Intent(context, RankingActivity::class.java)
+                    context.startActivity(intent)
+                },
                 colors = ButtonDefaults.buttonColors(AppColors.ButtonRanking),
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues(vertical = 20.dp),
@@ -93,7 +99,10 @@ fun MenuScreen() {
 
             OutlinedTextField(
                 value = username,
-                onValueChange = { username = it },
+                onValueChange = {
+                    username = it
+                    userViewModel.setUsername(it)
+                },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),

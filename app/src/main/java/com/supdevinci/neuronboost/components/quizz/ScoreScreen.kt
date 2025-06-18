@@ -9,6 +9,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,14 +22,27 @@ import com.supdevinci.neuronboost.ui.theme.labelScore
 import com.supdevinci.neuronboost.ui.theme.mainFont
 import com.supdevinci.neuronboost.ui.theme.titleScore
 import com.supdevinci.neuronboost.view.MenuActivity
+import com.supdevinci.neuronboost.view.RankingActivity
 import com.supdevinci.neuronboost.viewModel.QuizzViewModel
+import com.supdevinci.neuronboost.viewModel.RankingViewModel
 import com.supdevinci.neuronboost.viewModel.ScoreViewModel
+import com.supdevinci.neuronboost.viewModel.UserViewModel
 
 @Composable
-fun ScoreScreen(quizzViewModel: QuizzViewModel, scoreViewModel: ScoreViewModel) {
+fun ScoreScreen(
+    quizzViewModel: QuizzViewModel,
+    scoreViewModel: ScoreViewModel,
+    userViewModel: UserViewModel,
+    rankingViewModel: RankingViewModel
+) {
 
     val score = quizzViewModel.score.collectAsState().value
+    val username = userViewModel.username.collectAsState().value
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        rankingViewModel.insertRanking(username, score)
+    }
 
     Box(
         modifier = Modifier
@@ -77,7 +91,10 @@ fun ScoreScreen(quizzViewModel: QuizzViewModel, scoreViewModel: ScoreViewModel) 
             }
 
             Button(
-                onClick = {  },
+                onClick = {
+                    val intent = Intent(context, RankingActivity::class.java)
+                    context.startActivity(intent)
+                },
                 colors = ButtonDefaults.buttonColors(AppColors.ButtonRanking),
                 shape = RoundedCornerShape(16.dp),
                 contentPadding = PaddingValues(vertical = 20.dp),
